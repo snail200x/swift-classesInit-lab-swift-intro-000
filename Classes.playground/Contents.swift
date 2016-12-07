@@ -19,7 +19,22 @@ import Foundation
 // write your code here
 
 
-
+class Person {
+    var firstName: String
+    var lastName: String
+    var fullName: String {
+        return "\(self.firstName) \(self.lastName)"
+    }
+    
+    init(firstName: String, lastName: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+    }
+    
+    func greet(_ person: Person) -> String{
+        return "Hello, \(person.firstName)!"
+    }
+}
 
 
 
@@ -75,6 +90,24 @@ assert(greeting == "Hello, Alice!", greeting)
  
  (Note that the code below also includes an extension for adding a method to `Double`. You'll learn more about extensions later, so for now, don't worry about it. You'll see how to use it in Question #6 below.)
  */
+class Transaction {
+    var amount: Double
+    var type:String
+    var description: String {
+        var type:String = "credit"
+        if self.type == "out" {
+            type = "debit"
+        }
+        return "Transaction: \(type) in the amount of $\(self.amount.toMoney)"
+    }
+    
+    init(type:String, amount: Double) {
+        self.amount = amount
+        assert((type == "out" || type == "in"), "type must be out or in ")
+        self.type = type
+    }
+}
+
 extension Double {
     var toMoney: String {
         return NSString(format: "%.2f", self) as String
@@ -135,7 +168,37 @@ assert(transaction2.description == "Transaction: debit in the amount of $1.20", 
 // write your code here
 
 
-
+class BankAccount {
+    var owner: Person
+    var transactions: [Transaction]
+    var balance: Double {
+        var balance:Double = 0.0
+        for transaction in self.transactions {
+            switch transaction.type {
+            case "in":
+                balance += transaction.amount
+            default:
+                balance -= transaction.amount
+            }
+        }
+        return balance
+    }
+    
+    init(owner: Person) {
+        self.owner = owner
+        self.transactions = []
+    }
+    
+    func deposit(_ amount: Double) {
+        let tmpTransaction = Transaction(type:"in", amount:amount)
+        self.transactions.append(tmpTransaction)
+    }
+    
+    func withdraw(_ amount: Double) {
+        let tmpTransaction = Transaction(type:"out", amount:amount)
+        self.transactions.append(tmpTransaction)
+    }
+}
 
 
 
